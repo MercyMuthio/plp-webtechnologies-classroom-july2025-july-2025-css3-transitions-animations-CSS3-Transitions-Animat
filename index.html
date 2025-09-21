@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS & JavaScript Animation Showcase</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 30px;
+            max-width: 800px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: titlePulse 3s infinite;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card h2 {
+            margin-bottom: 20px;
+            color: #fdbb2d;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+        
+        .animation-box {
+            width: 100%;
+            height: 180px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .box {
+            width: 80px;
+            height: 80px;
+            background: #fdbb2d;
+            border-radius: 8px;
+            transition: all 0.5s ease;
+        }
+        
+        .animated .box {
+            animation: spinAndColor 2s forwards;
+        }
+        
+        .button {
+            background: #1a2a6c;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 8px;
+            font-size: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .button:hover {
+            background: #fdbb2d;
+            color: #1a2a6c;
+            transform: scale(1.08);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .flip-card {
+            width: 100%;
+            height: 220px;
+            perspective: 1000px;
+            margin: 20px 0;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.4rem;
+        }
+        
+        .flip-card-front {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .flip-card-back {
+            background: rgba(253, 187, 45, 0.9);
+            color: #1a2a6c;
+            transform: rotateY(180deg);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #1a2a6c, #fdbb2d);
+            border-radius: 12px;
+            transition: width 0.7s ease;
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.6s ease;
+            z-index: 1000;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            padding: 40px;
+            border-radius: 18px;
+            width: 85%;
+            max-width: 550px;
+            text-align: center;
+            transform: translateY(-60px);
+            transition: transform 0.6s ease;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .close-modal {
+            background: #fdbb2d;
+            color: #1a2a6c;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .close-modal:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card p {
+            text-align: center;
+            margin-top: 15px;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .scope-demo {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        @keyframes spinAndColor {
+            0% {
+                transform: rotate(0deg) scale(1);
+                background: #fdbb2d;
+                border-radius: 8px;
+            }
+            50% {
+                transform: rotate(180deg) scale(1.2);
+                background: #b21f1f;
+                border-radius: 50%;
+            }
+            100% {
+                transform: rotate(360deg) scale(1);
+                background: #1a2a6c;
+                border-radius: 8px;
+            }
+        }
+        
+        @keyframes titlePulse {
+            0% {
+                transform: scale(1);
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            }
+            50% {
+                transform: scale(1.05);
+                text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
+            }
+            100% {
+                transform: scale(1);
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CSS & JavaScript Animation Showcase</h1>
+        <p>Explore the power of combining CSS animations with JavaScript interactivity</p>
+    </header>
+    
+    <div class="container">
+        <div class="card">
+            <h2>Transform Animation</h2>
+            <div class="animation-box">
+                <div class="box" id="animatedBox"></div>
+            </div>
+            <div class="controls">
+                <button class="button" id="animateButton">Animate Box</button>
+                <button class="button" id="resetButton">Reset Box</button>
+            </div>
+            <p>Click to trigger a CSS animation via JavaScript</p>
+            <div class="scope-demo">
+                <p>Global count: <span id="globalCount">0</span></p>
+                <p>Local count: <span id="localCount">0</span></p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Card Flip</h2>
+            <div class="flip-card" id="flipCard">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <p>Front Side</p>
+                    </div>
+                    <div class="flip-card-back">
+                        <p>Back Side</p>
+                    </div>
+                </div>
+            </div>
+            <div class="controls">
+                <button class="button" id="flipButton">Flip Card</button>
+            </div>
+            <p>JavaScript toggles a CSS class for 3D flip effect</p>
+        </div>
+        
+        <div class="card">
+            <h2>Progress Loader</h2>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            <div class="controls">
+                <button class="button" id="startProgress">Start Loading</button>
+                <button class="button" id="resetProgress">Reset</button>
+            </div>
+            <p>JavaScript controls the CSS transition of width</p>
+        </div>
+        
+        <div class="card">
+            <h2>Modal Popup</h2>
+            <div class="controls">
+                <button class="button" id="openModal">Open Modal</button>
+            </div>
+            <p>JavaScript adds/removes CSS classes for animation</p>
+            <div class="scope-demo">
+                <p>Function Parameters Demo</p>
+                <button class="button" id="calculateButton">Calculate Area</button>
+                <p id="calculationResult"></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2>Animated Modal</h2>
+            <p>This modal smoothly appears with CSS transitions triggered by JavaScript</p>
+            <button class="close-modal" id="closeModal">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================
+        // JavaScript Function Concepts
+        // ============================
+        
+        // Global scope variable
+        let globalCounter = 0;
+        
+        // Function with parameters and return value
+        function calculateArea(width, height) {
+            // Local scope variable
+            const area = width * height;
+            return area;
+        }
+        
+        // Function to demonstrate scope
+        function updateCounters() {
+            // Local scope variable
+            let localCounter = 0;
+            
+            return {
+                incrementGlobal: function() {
+                    globalCounter++;
+                    return globalCounter;
+                },
+                incrementLocal: function() {
+                    localCounter++;
+                    return localCounter;
+                }
+            };
+        }
+        
+        // Create counter instance
+        const counters = updateCounters();
+        
+        // ============================
+        // DOM Elements
+        // ============================
+        const animatedBox = document.getElementById('animatedBox');
+        const animateButton = document.getElementById('animateButton');
+        const resetButton = document.getElementById('resetButton');
+        const flipCard = document.getElementById('flipCard');
+        const flipButton = document.getElementById('flipButton');
+        const progressBar = document.getElementById('progressBar');
+        const startProgress = document.getElementById('startProgress');
+        const resetProgress = document.getElementById('resetProgress');
+        const modal = document.getElementById('modal');
+        const openModal = document.getElementById('openModal');
+        const closeModal = document.getElementById('closeModal');
+        const globalCountDisplay = document.getElementById('globalCount');
+        const localCountDisplay = document.getElementById('localCount');
+        const calculateButton = document.getElementById('calculateButton');
+        const calculationResult = document.getElementById('calculationResult');
+        
+        // ============================
+        // Animation Functions
+        // ============================
+        
+        // Function to animate the box
+        function animateBox() {
+            // Using classList to add CSS animation class
+            animatedBox.parentElement.classList.add('animated');
+            
+            // Update counters
+            globalCountDisplay.textContent = counters.incrementGlobal();
+            localCountDisplay.textContent = counters.incrementLocal();
+            
+            // Reset animation after it completes
+            setTimeout(() => {
+                animatedBox.parentElement.classList.remove('animated');
+            }, 2000);
+        }
+        
+        // Function to reset the box
+        function resetBox() {
+            animatedBox.parentElement.classList.remove('animated');
+            animatedBox.style.transform = 'rotate(0deg) scale(1)';
+            animatedBox.style.background = '#fdbb2d';
+            animatedBox.style.borderRadius = '8px';
+        }
+        
+        // Function to flip the card
+        function flipCardHandler() {
+            // Toggle the 'flipped' class to trigger CSS transition
+            flipCard.classList.toggle('flipped');
+        }
+        
+        // Function to update progress bar
+        function updateProgressBar() {
+            // Reset if complete
+            if (progressBar.style.width === '100%') {
+                progressBar.style.width = '0%';
+                return;
+            }
+            
+            // Increment progress with a smooth transition
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                } else {
+                    width += 2;
+                    progressBar.style.width = width + '%';
+                }
+            }, 50);
+        }
+        
+        // Function to reset progress bar
+        function resetProgressBar() {
+            progressBar.style.width = '0%';
+        }
+        
+        // Function to open modal
+        function openModalHandler() {
+            modal.classList.add('active');
+        }
+        
+        // Function to close modal
+        function closeModalHandler() {
+            modal.classList.remove('active');
+        }
+        
+        // Function to demonstrate parameter usage
+        function showCalculation() {
+            const width = Math.floor(Math.random() * 20) + 5;
+            const height = Math.floor(Math.random() * 20) + 5;
+            const area = calculateArea(width, height);
+            
+            calculationResult.textContent = `Area of ${width} × ${height} = ${area}`;
+        }
+        
+        // ============================
+        // Event Listeners
+        // ============================
+        animateButton.addEventListener('click', animateBox);
+        resetButton.addEventListener('click', resetBox);
+        flipButton.addEventListener('click', flipCardHandler);
+        startProgress.addEventListener('click', updateProgressBar);
+        resetProgress.addEventListener('click', resetProgressBar);
+        openModal.addEventListener('click', openModalHandler);
+        closeModal.addEventListener('click', closeModalHandler);
+        calculateButton.addEventListener('click', showCalculation);
+        
+        // ============================
+        // Initialization
+        // ============================
+        // Add some initial animation to elements
+        document.querySelectorAll('.card').forEach((card, index) => {
+            card.style.animation = `slideIn 0.5s ease ${index * 0.2}s both`;
+        });
+    </script>
+</body>
+</html>
